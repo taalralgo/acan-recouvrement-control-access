@@ -16,6 +16,18 @@ function csrfToken() {
   return cookie ? decodeURIComponent(cookie.split('=')[1]) : ''
 }
 
+/**
+ * Préfixe des chemins internes lorsque l'application est servie depuis un
+ * sous-dossier (https://exemple.com/regie). Centralisé ici : les appels des
+ * composants restent écrits en « /api/… », sans se soucier du déploiement.
+ */
+export const basePath = document.getElementById('app')?.dataset.basePath ?? ''
+
+export function appUrl(path) {
+  // Une URL déjà absolue vient de Laravel (route()) : elle porte son préfixe.
+  return /^https?:\/\//.test(path) ? path : basePath + path
+}
+
 export class RemoteRefusal extends Error {
   constructor(message, failure) {
     super(message)
@@ -35,7 +47,7 @@ export class ValidationFailed extends Error {
 }
 
 async function request(method, url, body) {
-  const response = await fetch(url, {
+  const response = await fetch(appUrl(url), {
     method,
     headers: {
       'Accept': 'application/json',
@@ -47,7 +59,7 @@ async function request(method, url, body) {
   })
 
   if (response.status === 401 || response.status === 419) {
-    window.location.href = '/login'
+    window.location.href = appUrl('/login')
 
     throw new Error('Session expirée.')
   }

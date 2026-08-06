@@ -1,6 +1,6 @@
 <script setup>
 import { useNotifier } from './composables/useNotifier'
-import { http } from './plugins/http'
+import { appUrl, http } from './plugins/http'
 
 const props = defineProps({
   user: { type: Object, required: true },
@@ -11,7 +11,7 @@ const notifier = useNotifier()
 
 async function logout() {
   await http.post(props.logoutUrl)
-  window.location.href = '/login'
+  window.location.href = appUrl('/login')
 }
 </script>
 

@@ -8,8 +8,12 @@ import AdminPage from './pages/AdminPage.vue'
 const mount = document.getElementById('app')
 const isAdmin = mount.dataset.userAdmin === '1'
 
+// Sous-dossier de déploiement : sans cette base, le routeur interpréterait
+// « /regie/administration » comme une route inconnue.
+const basePath = mount.dataset.basePath || '/'
+
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(basePath),
   routes: [
     { path: '/', name: 'groupes', component: GroupesPage },
     // Le serveur refuse déjà les appels d'administration à un non-admin ;

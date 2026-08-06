@@ -33,6 +33,37 @@ php artisan migrate --force
 php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
 
+### Déploiement dans un sous-dossier
+
+Si l'application est servie depuis `https://exemple.com/regie` plutôt que
+depuis la racine d'un domaine, **la commande de build ne change pas** :
+
+```bash
+yarn build      # ou npm run build
+```
+
+Tout se règle par `APP_URL`, qui doit contenir le sous-dossier :
+
+```dotenv
+APP_URL=https://exemple.com/regie
+```
+
+Laravel en déduit alors les URL des assets et des routes, et transmet le
+préfixe à l'interface (`data-base-path`), qui l'applique à sa navigation et à
+ses appels. Sans cela, la SPA viserait `/api/…` au lieu de `/regie/api/…`.
+
+Après tout changement d'`APP_URL` : `php artisan config:cache`.
+
+Vérifier que le préfixe est bien pris en compte :
+
+```bash
+php artisan tinker --execute="echo route('login');"
+# doit afficher https://exemple.com/regie/login
+```
+
+Côté serveur web, la racine documentaire doit pointer sur le dossier `public`
+du projet, et non sur le projet lui-même.
+
 ### Node trop ancien sur le serveur
 
 ```
