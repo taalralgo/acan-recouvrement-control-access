@@ -24,7 +24,7 @@
 
         <label for="password">Nouveau mot de passe</label>
         <input id="password" type="password" name="password" required autocomplete="new-password">
-        <p class="muted hint">Au moins 10 caractères.</p>
+        <p class="muted hint">Au moins {{ $minLength }} caractères.</p>
         @error('password')
         <p class="error">{{ $message }}</p>
         @enderror

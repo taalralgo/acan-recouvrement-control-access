@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Auth\PasswordChangeController;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -80,6 +81,34 @@ class AuthenticationTest extends TestCase
         $this->assertTrue(Hash::check('un-mot-de-passe-solide', $user->password));
 
         $this->actingAs($user)->get('/')->assertOk();
+    }
+
+    public function test_a_password_of_exactly_the_minimum_length_is_accepted(): void
+    {
+        $user = User::factory()->pendingPasswordChange()->create();
+        $minimum = str_repeat('a', PasswordChangeController::MIN_LENGTH);
+
+        $this->actingAs($user)->put(route('password.change.update'), [
+            'current_password' => 'password',
+            'password' => $minimum,
+            'password_confirmation' => $minimum,
+        ])->assertSessionHasNoErrors();
+
+        $this->assertFalse($user->refresh()->must_change_password);
+    }
+
+    public function test_a_password_one_character_too_short_is_refused(): void
+    {
+        $user = User::factory()->pendingPasswordChange()->create();
+        $tooShort = str_repeat('a', PasswordChangeController::MIN_LENGTH - 1);
+
+        $this->actingAs($user)->put(route('password.change.update'), [
+            'current_password' => 'password',
+            'password' => $tooShort,
+            'password_confirmation' => $tooShort,
+        ])->assertSessionHasErrors('password');
+
+        $this->assertTrue($user->refresh()->must_change_password);
     }
 
     public function test_the_new_password_cannot_be_the_temporary_one(): void

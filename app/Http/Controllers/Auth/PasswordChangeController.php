@@ -21,16 +21,22 @@ use Illuminate\View\View;
  */
 class PasswordChangeController extends Controller
 {
+    /**
+     * Longueur minimale exigée. Définie ici et transmise à la vue, pour que le
+     * chiffre annoncé à l'écran ne puisse pas diverger de la règle appliquée.
+     */
+    public const MIN_LENGTH = 8;
+
     public function edit(): View
     {
-        return view('auth.change-password');
+        return view('auth.change-password', ['minLength' => self::MIN_LENGTH]);
     }
 
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Password::min(10)],
+            'password' => ['required', 'confirmed', Password::min(self::MIN_LENGTH)],
         ]);
 
         $user = $request->user();
