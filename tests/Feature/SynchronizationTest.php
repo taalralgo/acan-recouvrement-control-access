@@ -188,6 +188,6 @@ class SynchronizationTest extends TestCase
         Http::fake(['casse.test/*' => Http::response('', 500)]);
 
         // Un cron doit pouvoir détecter qu'une plateforme n'a pas répondu.
-        $this->artisan('blockaccess:sync')->assertFailed();
+        $this->artisan('regie:sync')->assertFailed();
     }
 }

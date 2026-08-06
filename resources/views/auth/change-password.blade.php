@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Choisir un mot de passe — blockAccess')
+@section('title', 'Choisir un mot de passe — aCAN Régie')
 
 @section('content')
     <form method="POST" action="{{ route('password.change.update') }}" class="card">

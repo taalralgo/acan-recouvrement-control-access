@@ -17,7 +17,7 @@ final class CompanyEmail implements ValidationRule
 {
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $domain = config('blockaccess.email_domain');
+        $domain = config('regie.email_domain');
 
         if (!is_string($value) || !str_ends_with(strtolower($value), '@' . strtolower($domain)))
         {

@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Seule base sur laquelle la suite accepte de s'exécuter.
      */
-    private const TEST_DATABASE = 'acan_blockaccess_test';
+    private const TEST_DATABASE = 'acan_regie_test';
 
     protected function setUp(): void
     {

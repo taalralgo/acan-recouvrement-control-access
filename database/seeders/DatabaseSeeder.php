@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Aucun compte n'est créé ici : le premier administrateur passe par
-        // `php artisan blockaccess:create-admin`, seul moyen d'obtenir un mot
+        // `php artisan regie:create-admin`, seul moyen d'obtenir un mot
         // de passe temporaire affiché une fois.
         $this->call(BlockReasonTemplateSeeder::class);
     }

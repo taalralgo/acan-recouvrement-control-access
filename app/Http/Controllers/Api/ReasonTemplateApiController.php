@@ -52,7 +52,7 @@ class ReasonTemplateApiController extends Controller
      */
     private function validateTemplate(Request $request): array
     {
-        $max = config('blockaccess.reason_max_length');
+        $max = config('regie.reason_max_length');
 
         return $request->validate([
             'label' => ['required', 'string', 'max:120'],

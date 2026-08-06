@@ -1,4 +1,4 @@
-# blockAccess — Suspension d'accès pour recouvrement
+# aCAN Régie — Suspension d'accès pour recouvrement
 
 Outil interne permettant à l'équipe de recouvrement de suspendre l'accès des
 utilisateurs d'une entreprise cliente à nos SAAS, avec un motif affiché au client.
@@ -24,8 +24,8 @@ richesse fonctionnelle.
 
 | Sujet | Décision | Raison |
 |---|---|---|
-| Architecture | App autonome + contrat API REST sur chaque SAAS | Un 2ᵉ SAAS = implémenter 3 endpoints, zéro changement dans blockAccess |
-| Hébergement | blockAccess et chaque SAAS sur des serveurs distincts | L'API transite par Internet : sécurité renforcée obligatoire (§4.4) |
+| Architecture | App autonome + contrat API REST sur chaque SAAS | Un 2ᵉ SAAS = implémenter 3 endpoints, zéro changement dans aCAN Régie |
+| Hébergement | aCAN Régie et chaque SAAS sur des serveurs distincts | L'API transite par Internet : sécurité renforcée obligatoire (§4.4) |
 | Granularité | Par **Groupe**, jamais par utilisateur | `Groupe` est le terme commun à tous les SAAS |
 | Périmètre | Back-office uniquement | La diffusion publique (apps mobiles, site client) reste intacte : pas d'impact sur les téléspectateurs finaux |
 | Sessions actives | Éjection immédiate via middleware | Sans ça, un blocage du vendredi soir est sans effet sur une session ouverte |
@@ -66,7 +66,7 @@ Deux motifs de blocage différents, deux responsables différents, aucune
 interférence : un admin ne peut pas annuler par inadvertance une décision de
 recouvrement.
 
-Aucune table d'historique côté TVe — l'historique vit dans blockAccess.
+Aucune table d'historique côté TVe — l'historique vit dans aCAN Régie.
 
 ### 4.2 Point de décision unique
 
@@ -95,10 +95,10 @@ Consommée par :
 redirige bien vers l'écran de connexion avec le motif, et n'affiche pas une
 erreur brute.
 
-### 4.4 API consommée par blockAccess
+### 4.4 API consommée par aCAN Régie
 
 Ce contrat est **identique sur toutes les plateformes**. Le terme `groupe` est
-le vocabulaire partagé ; l'interface de blockAccess parle d'« Entreprises ».
+le vocabulaire partagé ; l'interface d'aCAN Régie parle d'« Entreprises ».
 
 ```
 GET  /api/access/groupes                → id, code, name, lang, users_count,
@@ -113,14 +113,14 @@ personnes peuvent agir en parallèle, et un appel rejoué reste sans danger.
 
 #### Sécurité — l'API est exposée sur Internet
 
-blockAccess et les SAAS vivent sur des serveurs distincts : ces endpoints sont
+aCAN Régie et les SAAS vivent sur des serveurs distincts : ces endpoints sont
 publiquement joignables et permettent de couper l'accès de n'importe quel client.
 Le token seul ne suffit pas.
 
 **Authentification**
 - Token aléatoire de 64 caractères, propre à chaque plateforme
 - Comparaison via `hash_equals()` — jamais `==`, qui expose au timing attack
-- Stocké chiffré côté blockAccess (cast `encrypted`), en clair dans le `.env` du SAAS
+- Stocké chiffré côté aCAN Régie (cast `encrypted`), en clair dans le `.env` du SAAS
 - Rotation possible sans redéploiement
 
 **Pas de filtrage par IP — décision assumée**
@@ -151,8 +151,8 @@ nul.
   pour une alerte le jour où le SMTP existe
 - **Commande de secours** `php artisan groupe:access-restore` sur chaque SAAS :
   débloque tous les groupes en une fois, utilisable par la technique sans passer
-  par blockAccess. Plan de restauration en cas de token compromis, de bug, ou de
-  blockAccess indisponible.
+  par aCAN Régie. Plan de restauration en cas de token compromis, de bug, ou de
+  aCAN Régie indisponible.
 
 **Le motif est une donnée non fiable**
 
@@ -161,7 +161,7 @@ précaution, quelqu'un qui atteint l'API peut y injecter du HTML et défigurer
 l'écran de login, voire y placer un faux formulaire de saisie.
 
 - Traité comme texte brut, jamais interprété comme HTML
-- Longueur bornée (500 caractères), validée côté SAAS **et** côté blockAccess
+- Longueur bornée (500 caractères), validée côté SAAS **et** côté aCAN Régie
 - Échappé à l'affichage
 
 ### 4.5 Message affiché
@@ -172,7 +172,7 @@ La clé `auth.group_inactive` existante reste utilisée pour le flag `enabled`.
 
 ---
 
-## 5. Application blockAccess
+## 5. Application aCAN Régie
 
 ### 5.1 Stack
 
@@ -241,7 +241,7 @@ injoignable rendrait toute l'interface inutilisable.
 
 ### 5.5 Langue du motif
 
-blockAccess connaît la langue de chaque groupe (remontée par `fetchGroupes`),
+aCAN Régie connaît la langue de chaque groupe (remontée par `fetchGroupes`),
 résout la version FR ou EN **avant** l'appel, et n'envoie qu'une seule chaîne.
 TVe ne stocke qu'une colonne et ne porte aucune logique de traduction.
 
@@ -259,7 +259,7 @@ le message reste dans la langue d'origine.
 - Un middleware éjecte à la requête suivante tout compte supprimé — même
   principe que côté TVe
 - Le dernier admin ne peut pas être supprimé
-- Premier admin créé par `php artisan blockaccess:create-admin`
+- Premier admin créé par `php artisan regie:create-admin`
 
 ---
 
@@ -353,11 +353,11 @@ Ce lot est aussi le **modèle de référence** pour raccorder les prochains SAAS
 il doit rester assez petit pour être reproduit en une journée sur une autre
 plateforme.
 
-**Lot 2 — blockAccess, socle**
+**Lot 2 — aCAN Régie, socle**
 App Laravel, authentification, modèle de données, `SaasConnector` +
 `HttpSaasConnector`, commande de synchronisation, création du premier admin.
 
-**Lot 3 — blockAccess, interface**
+**Lot 3 — aCAN Régie, interface**
 Liste des entreprises, modale de blocage avec aperçu, drawer d'historique.
 
 **Lot 4 — administration**

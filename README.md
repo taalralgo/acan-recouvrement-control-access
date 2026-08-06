@@ -1,4 +1,4 @@
-# blockAccess
+# aCAN Régie
 
 Outil interne permettant à l'équipe de recouvrement de suspendre l'accès des
 utilisateurs d'une entreprise cliente à nos SAAS, avec un motif affiché au client.
@@ -10,7 +10,7 @@ Conception et décisions : [SPEC.md](SPEC.md).
 ```bash
 composer install
 php artisan migrate --seed
-php artisan blockaccess:create-admin      # premier compte, mot de passe affiché une fois
+php artisan regie:create-admin      # premier compte, mot de passe affiché une fois
 php artisan serve
 ```
 
@@ -22,7 +22,7 @@ TVe : `docs/implementations/groupe-access-suspension.md` dans son dépôt).
 Enregistrer la plateforme, puis synchroniser :
 
 ```bash
-php artisan blockaccess:sync
+php artisan regie:sync
 ```
 
 `base_url` et `api_token` sont modifiables sans redéploiement : les projets
@@ -76,5 +76,5 @@ existe pour le jour où une plateforme ne pourra pas l'exposer.
 php artisan test
 ```
 
-La suite s'exécute sur `acan_blockaccess_test` et refuse de démarrer sur toute
+La suite s'exécute sur `acan_regie_test` et refuse de démarrer sur toute
 autre base (`tests/TestCase.php`).

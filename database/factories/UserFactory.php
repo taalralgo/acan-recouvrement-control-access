@@ -23,7 +23,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->userName() . '@' . config('blockaccess.email_domain'),
+            'email' => fake()->unique()->userName() . '@' . config('regie.email_domain'),
             'password' => static::$password ??= Hash::make('password'),
             'role' => User::ROLE_COLLECTOR,
             'must_change_password' => false,

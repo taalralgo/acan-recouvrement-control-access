@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 
 class SyncGroupes extends Command
 {
-    protected $signature = 'blockaccess:sync';
+    protected $signature = 'regie:sync';
 
     protected $description = 'Rafraîchit la liste des entreprises depuis les plateformes raccordées';
 

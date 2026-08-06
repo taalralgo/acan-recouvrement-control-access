@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Connexion — blockAccess')
+@section('title', 'Connexion — aCAN Régie')
 
 @section('content')
     <form method="POST" action="{{ route('login') }}" class="card">
         @csrf
-        <h1>blockAccess</h1>
+        <h1>aCAN Régie</h1>
 
         @error('email')
         <p class="error">{{ $message }}</p>

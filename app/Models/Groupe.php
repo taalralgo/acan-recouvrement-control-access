@@ -99,6 +99,6 @@ class Groupe extends Model
             return true;
         }
 
-        return $this->synced_at->lt(now()->subMinutes(config('blockaccess.stale_after_minutes')));
+        return $this->synced_at->lt(now()->subMinutes(config('regie.stale_after_minutes')));
     }
 }

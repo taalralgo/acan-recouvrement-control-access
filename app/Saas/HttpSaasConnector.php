@@ -58,8 +58,8 @@ final class HttpSaasConnector implements SaasConnector
         {
             $response = Http::withToken($platform->api_token)
                 ->acceptJson()
-                ->timeout(config('blockaccess.http.timeout'))
-                ->connectTimeout(config('blockaccess.http.connect_timeout'))
+                ->timeout(config('regie.http.timeout'))
+                ->connectTimeout(config('regie.http.connect_timeout'))
                 ->{$method}($platform->endpoint($path), $payload);
         }
         catch (ConnectionException $exception)

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'blockAccess')</title>
+    <title>@yield('title', 'aCAN Régie')</title>
     <style>
         :root { color-scheme: light dark; }
         body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 2rem; line-height: 1.5; }

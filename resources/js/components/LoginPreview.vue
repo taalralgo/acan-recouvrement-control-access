@@ -11,7 +11,7 @@ defineProps({
 
     C'est le garde-fou principal de l'outil : une équipe non technique doit
     voir, avant de valider, le texte exact qu'un client va lire. Le rendu imite
-    volontairement la page réelle plutôt que le style de blockAccess.
+    volontairement la page réelle plutôt que le style d'aCAN Régie.
   -->
   <div class="preview">
     <div class="preview-window">

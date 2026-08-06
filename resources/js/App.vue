@@ -18,7 +18,7 @@ async function logout() {
 <template>
   <v-app>
     <v-app-bar flat border density="comfortable">
-      <v-app-bar-title class="font-weight-bold">blockAccess</v-app-bar-title>
+      <v-app-bar-title class="font-weight-bold">aCAN Régie</v-app-bar-title>
 
       <v-btn variant="text" :to="{ name: 'groupes' }" exact>Entreprises</v-btn>
 

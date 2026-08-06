@@ -8,7 +8,7 @@ use App\Models\SaasPlatform;
 use Illuminate\Support\Collection;
 
 /**
- * Ce que blockAccess attend d'une plateforme raccordée.
+ * Ce qu'aCAN Régie attend d'une plateforme raccordée.
  *
  * Une seule implémentation existe aujourd'hui, HttpSaasConnector : tant qu'un
  * SAAS respecte le contrat REST, il n'y a pas de connecteur à écrire. Cette

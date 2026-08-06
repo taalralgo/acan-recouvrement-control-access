@@ -39,7 +39,7 @@ class GroupeApiController extends Controller
     public function block(Request $request, Groupe $groupe): JsonResponse
     {
         $validated = $request->validate([
-            'reason' => ['required', 'string', 'max:' . config('blockaccess.reason_max_length')],
+            'reason' => ['required', 'string', 'max:' . config('regie.reason_max_length')],
         ]);
 
         return $this->attempt(fn (): Groupe => app(AccessSuspender::class)->block(

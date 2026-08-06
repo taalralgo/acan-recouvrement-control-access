@@ -19,7 +19,7 @@ use Illuminate\Validation\Rule;
  */
 class CreateAdmin extends Command
 {
-    protected $signature = 'blockaccess:create-admin
+    protected $signature = 'regie:create-admin
                             {--name= : Nom affiché}
                             {--email= : Adresse professionnelle}';
 
