@@ -130,6 +130,62 @@ class GroupeApiTest extends TestCase
             ->assertJsonPath('sync.is_stale', true);
     }
 
+    /**
+     * Le scénario qui a motivé ce rafraîchissement : le groupe est passé en
+     * anglais dans la plateforme depuis la dernière synchronisation. Sans
+     * relecture, le motif partirait en français et resterait affiché ainsi au
+     * client jusqu'au rétablissement.
+     */
+    public function test_refreshing_picks_up_a_language_changed_upstream(): void
+    {
+        $groupe = $this->groupe(['lang' => 'fr', 'users_count' => 3]);
+
+        Http::fake(['tve.test/api/access/groupes' => Http::response(['data' => [[
+            'id' => 7,
+            'code' => 'GRP1',
+            'name' => 'Groupe Alpha',
+            'lang' => 'en',
+            'users_count' => 14,
+            'enabled' => true,
+            'access_blocked_at' => null,
+            'access_block_reason' => null,
+        ]]])]);
+
+        $this->actingAs($this->actor())
+            ->postJson("/api/groupes/{$groupe->id}/refresh")
+            ->assertOk()
+            ->assertJsonPath('refreshed', true)
+            ->assertJsonPath('data.lang', 'en')
+            // Le décompte annoncé à l'agent vient de la même copie.
+            ->assertJsonPath('data.users_count', 14);
+    }
+
+    public function test_an_unreachable_platform_still_lets_the_agent_proceed(): void
+    {
+        $groupe = $this->groupe(['lang' => 'fr']);
+
+        Http::fake(['tve.test/*' => Http::response('', 500)]);
+
+        // Mieux vaut agir sur une copie datée, signalée comme telle, que
+        // d'empêcher toute suspension parce qu'une plateforme ne répond pas.
+        $this->actingAs($this->actor())
+            ->postJson("/api/groupes/{$groupe->id}/refresh")
+            ->assertOk()
+            ->assertJsonPath('refreshed', false)
+            ->assertJsonPath('data.lang', 'fr');
+    }
+
+    public function test_refreshing_reports_a_groupe_that_disappeared_upstream(): void
+    {
+        $groupe = $this->groupe();
+
+        Http::fake(['tve.test/api/access/groupes' => Http::response(['data' => []])]);
+
+        $this->actingAs($this->actor())
+            ->postJson("/api/groupes/{$groupe->id}/refresh")
+            ->assertNotFound();
+    }
+
     public function test_blocking_returns_the_updated_row(): void
     {
         $groupe = $this->groupe();

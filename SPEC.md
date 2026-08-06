@@ -239,6 +239,13 @@ injoignable rendrait toute l'interface inutilisable.
 
 **Le blocage lui-même est toujours un appel live, jamais différé.**
 
+**Le groupe est relu juste avant d'être suspendu.** Le motif est résolu dans sa
+langue puis figé côté plateforme jusqu'au rétablissement : partir d'une copie
+datée enverrait durablement au client un message dans la mauvaise langue, et
+annoncerait à l'agent un décompte d'utilisateurs faux. Une plateforme
+injoignable n'empêche pas d'agir — la copie connue est utilisée, signalée comme
+telle.
+
 **Synchronisation manuelle en v1, sans cron.** Elle ne rafraîchit que ce qui
 change hors de cet outil — création ou renommage d'un groupe, effectif, flag
 `enabled` d'un admin de plateforme — soit des événements rares. L'état de

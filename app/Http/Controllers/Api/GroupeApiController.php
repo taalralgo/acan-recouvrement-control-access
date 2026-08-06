@@ -10,6 +10,7 @@ use App\Models\BlockAction;
 use App\Models\Groupe;
 use App\Saas\SaasUnreachable;
 use App\Services\AccessSuspender;
+use App\Services\GroupeSynchronizer;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -58,6 +59,47 @@ class GroupeApiController extends Controller
             'is_stale' => $oldest === null
                 || Carbon::parse($oldest)->lt(now()->subMinutes(config('regie.stale_after_minutes'))),
         ];
+    }
+
+    /**
+     * Relit le groupe auprès de sa plateforme, juste avant une suspension.
+     *
+     * Le motif est rédigé dans la langue du groupe puis figé dans la base de
+     * la plateforme jusqu'au rétablissement : le résoudre à partir d'une copie
+     * datée enverrait durablement au client un message dans la mauvaise
+     * langue. Le décompte d'utilisateurs annoncé à l'agent souffre du même
+     * défaut. La synchronisation étant manuelle, on rafraîchit ici.
+     */
+    public function refresh(Groupe $groupe, GroupeSynchronizer $synchronizer): JsonResponse
+    {
+        $groupe->loadMissing('platform');
+
+        $result = $synchronizer->sync($groupe->platform);
+
+        if (!$result->success)
+        {
+            // Plateforme injoignable : on rend la copie connue plutôt que de
+            // bloquer l'agent, en signalant qu'elle peut être datée.
+            return response()->json([
+                'data' => new GroupeResource($groupe),
+                'refreshed' => false,
+                'message' => $result->message(),
+            ]);
+        }
+
+        $fresh = Groupe::query()->with('platform')->find($groupe->id);
+
+        if ($fresh === null)
+        {
+            return response()->json([
+                'message' => "Cette entreprise n'existe plus sur la plateforme.",
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'data' => new GroupeResource($fresh),
+            'refreshed' => true,
+        ]);
     }
 
     public function block(Request $request, Groupe $groupe): JsonResponse

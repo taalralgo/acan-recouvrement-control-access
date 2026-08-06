@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/groupes/{groupe}/block', [GroupeApiController::class, 'block']);
             Route::post('/groupes/{groupe}/unblock', [GroupeApiController::class, 'unblock']);
             Route::get('/groupes/{groupe}/actions', [GroupeApiController::class, 'actions']);
+            Route::post('/groupes/{groupe}/refresh', [GroupeApiController::class, 'refresh']);
             Route::get('/reason-templates', [ReferenceApiController::class, 'templates']);
             Route::post('/sync', [ReferenceApiController::class, 'sync']);
 

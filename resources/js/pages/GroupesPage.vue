@@ -7,13 +7,14 @@ import HistoryDrawer from '../components/HistoryDrawer.vue'
 import { useGroupes } from '../composables/useGroupes'
 import { useNotifier } from '../composables/useNotifier'
 
-const { groupes, loading, syncing, page, lastPage, total, syncState, load, block, unblock, sync } = useGroupes()
+const { groupes, loading, syncing, page, lastPage, total, syncState, load, refreshOne, block, unblock, sync } = useGroupes()
 const notifier = useNotifier()
 
 const search = ref('')
 const status = ref('all')
 
 const blocking = ref(null)
+const preparing = ref(null)
 const unblocking = ref(null)
 const historyFor = ref(null)
 
@@ -61,6 +62,34 @@ watch(search, () => {
 watch(status, () => refresh())
 
 onMounted(() => refresh())
+
+/**
+ * Ouvre la modale sur des données fraîches.
+ *
+ * La langue du groupe décide du motif envoyé au client, et ce motif reste
+ * affiché jusqu'au rétablissement : le résoudre sur une copie datée
+ * produirait un message durablement dans la mauvaise langue. Le décompte
+ * d'utilisateurs annoncé à l'agent dépend de la même copie.
+ */
+async function openBlock(groupe) {
+  preparing.value = groupe.id
+
+  try {
+    const payload = await refreshOne(groupe)
+
+    blocking.value = payload.data
+
+    if (payload.refreshed === false) {
+      notifier.failure(`Impossible de vérifier les informations à jour. ${payload.message}`)
+    }
+  } catch (error) {
+    // Entreprise disparue de la plateforme, ou plateforme injoignable.
+    notifier.failure(error.message)
+    await refresh(page.value)
+  } finally {
+    preparing.value = null
+  }
+}
 
 async function confirmBlock(reason) {
   const groupe = blocking.value
@@ -194,7 +223,8 @@ async function refreshFromPlatforms() {
                 color="error"
                 size="small"
                 prepend-icon="mdi-lock"
-                @click="blocking = groupe"
+                :loading="preparing === groupe.id"
+                @click="openBlock(groupe)"
               >
                 Bloquer l'accès
               </v-btn>

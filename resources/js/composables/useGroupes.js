@@ -47,6 +47,21 @@ export function useGroupes() {
     }
   }
 
+  /**
+   * Relit le groupe auprès de sa plateforme avant une suspension.
+   *
+   * Le motif est résolu dans la langue du groupe puis figé côté plateforme :
+   * partir d'une copie datée enverrait durablement au client un message dans
+   * la mauvaise langue, et annoncerait un décompte d'utilisateurs faux.
+   */
+  async function refreshOne(groupe) {
+    const payload = await http.post(`/api/groupes/${groupe.id}/refresh`)
+
+    replace(payload.data)
+
+    return payload
+  }
+
   async function block(groupe, reason) {
     const payload = await http.post(`/api/groupes/${groupe.id}/block`, { reason })
 
@@ -73,5 +88,5 @@ export function useGroupes() {
     }
   }
 
-  return { groupes, loading, syncing, page, lastPage, total, syncState: sync_state, load, block, unblock, sync }
+  return { groupes, loading, syncing, page, lastPage, total, syncState: sync_state, load, refreshOne, block, unblock, sync }
 }
