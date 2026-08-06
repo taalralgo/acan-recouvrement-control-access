@@ -7,11 +7,54 @@ Conception et décisions : [SPEC.md](SPEC.md).
 
 ## Démarrer
 
+Prérequis : PHP 8.3+, MySQL, et **Node `^20.19` ou `>=22.12`** (contrainte de
+Vite 8, déclarée dans `package.json`).
+
 ```bash
 composer install
+npm install
+npm run build
 php artisan migrate --seed
 php artisan regie:create-admin      # premier compte, mot de passe affiché une fois
 php artisan serve
+```
+
+## Déployer
+
+L'interface est une application Vue compilée : **`npm run build` est
+obligatoire**, sinon `@vite()` ne trouve pas son manifeste et la page reste
+vide. Les fichiers produits vont dans `public/build`, qui n'est pas versionné.
+
+```bash
+composer install --no-dev --optimize-autoloader
+npm ci
+npm run build
+php artisan migrate --force
+php artisan config:cache && php artisan route:cache && php artisan view:cache
+```
+
+### Node trop ancien sur le serveur
+
+```
+SyntaxError: The requested module 'node:util' does not provide an export named 'styleText'
+```
+
+Ce message signifie que Node est antérieur à 20.19 : `styleText` n'existe que
+depuis Node 20.12, et Rolldown (le compilateur de Vite 8) s'en sert. Mettre
+Node à jour, par exemple en 22 LTS sur Debian/Ubuntu :
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get install -y nodejs
+node -v      # doit afficher v22.x
+```
+
+**Alternative sans toucher au serveur** : compiler ailleurs et n'y déposer que
+le résultat. Le serveur n'a alors besoin ni de Node ni de `node_modules`.
+
+```bash
+npm run build                                   # sur un poste à jour
+rsync -av public/build/ user@serveur:/chemin/public/build/
 ```
 
 ## Raccorder une plateforme
