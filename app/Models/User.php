@@ -46,6 +46,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Dernier administrateur en poste ?
+     *
+     * Le supprimer ou le rétrograder laisserait l'équipe sans personne pour
+     * gérer les comptes et les plateformes, sans recours depuis l'interface.
+     */
+    public function isLastAdmin(): bool
+    {
+        return $this->isAdmin()
+            && self::query()->where('role', self::ROLE_ADMIN)->count() <= 1;
+    }
+
+    /**
      * Instantané conservé dans le journal, pour que l'historique reste lisible
      * après la suppression du compte.
      *

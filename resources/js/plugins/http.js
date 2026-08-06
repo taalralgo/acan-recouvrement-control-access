@@ -23,6 +23,17 @@ export class RemoteRefusal extends Error {
   }
 }
 
+/**
+ * Erreurs de saisie, à replacer sous les champs concernés plutôt que dans une
+ * annonce générale.
+ */
+export class ValidationFailed extends Error {
+  constructor(message, errors) {
+    super(message)
+    this.errors = errors
+  }
+}
+
 async function request(method, url, body) {
   const response = await fetch(url, {
     method,
@@ -43,6 +54,10 @@ async function request(method, url, body) {
 
   const payload = await response.json().catch(() => ({}))
 
+  if (response.status === 422) {
+    throw new ValidationFailed(payload.message ?? 'Vérifiez les informations saisies.', payload.errors ?? {})
+  }
+
   if (response.status === 409) {
     throw new RemoteRefusal(payload.message ?? "La plateforme a refusé l'opération.", payload.failure)
   }
@@ -57,4 +72,6 @@ async function request(method, url, body) {
 export const http = {
   get: url => request('GET', url),
   post: (url, body) => request('POST', url, body ?? {}),
+  put: (url, body) => request('PUT', url, body ?? {}),
+  delete: url => request('DELETE', url),
 }

@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\GroupeApiController;
+use App\Http\Controllers\Api\PlatformApiController;
+use App\Http\Controllers\Api\ReasonTemplateApiController;
 use App\Http\Controllers\Api\ReferenceApiController;
+use App\Http\Controllers\Api\TeamApiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordChangeController;
 use App\Http\Controllers\SpaController;
@@ -32,6 +35,29 @@ Route::middleware('auth')->group(function (): void {
             Route::get('/groupes/{groupe}/actions', [GroupeApiController::class, 'actions']);
             Route::get('/reason-templates', [ReferenceApiController::class, 'templates']);
             Route::post('/sync', [ReferenceApiController::class, 'sync']);
+
+            /*
+            | Administration : comptes, plateformes et motifs types.
+            | Suspendre un accès reste ouvert à toute l'équipe ; seule la
+            | configuration est réservée aux administrateurs.
+            */
+            Route::middleware('admin')->group(function (): void {
+                Route::get('/team', [TeamApiController::class, 'index']);
+                Route::post('/team', [TeamApiController::class, 'store']);
+                Route::put('/team/{user}', [TeamApiController::class, 'update']);
+                Route::delete('/team/{user}', [TeamApiController::class, 'destroy']);
+                Route::post('/team/{user}/reset-password', [TeamApiController::class, 'resetPassword']);
+
+                Route::get('/platforms', [PlatformApiController::class, 'index']);
+                Route::post('/platforms', [PlatformApiController::class, 'store']);
+                Route::put('/platforms/{platform}', [PlatformApiController::class, 'update']);
+                Route::delete('/platforms/{platform}', [PlatformApiController::class, 'destroy']);
+                Route::post('/platforms/{platform}/test', [PlatformApiController::class, 'test']);
+
+                Route::post('/reason-templates', [ReasonTemplateApiController::class, 'store']);
+                Route::put('/reason-templates/{template}', [ReasonTemplateApiController::class, 'update']);
+                Route::delete('/reason-templates/{template}', [ReasonTemplateApiController::class, 'destroy']);
+            });
         });
 
         // Toutes les autres URL sont rendues par la SPA.

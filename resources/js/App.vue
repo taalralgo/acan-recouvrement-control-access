@@ -20,6 +20,14 @@ async function logout() {
     <v-app-bar flat border density="comfortable">
       <v-app-bar-title class="font-weight-bold">blockAccess</v-app-bar-title>
 
+      <v-btn variant="text" :to="{ name: 'groupes' }" exact>Entreprises</v-btn>
+
+      <v-btn v-if="props.user.isAdmin" variant="text" :to="{ name: 'admin' }">
+        Administration
+      </v-btn>
+
+      <v-spacer />
+
       <span class="text-body-2 text-medium-emphasis mr-4 d-none d-sm-inline">
         {{ props.user.name }}
       </span>
