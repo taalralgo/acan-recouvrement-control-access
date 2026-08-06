@@ -52,7 +52,17 @@ Laravel en déduit alors les URL des assets et des routes, et transmet le
 préfixe à l'interface (`data-base-path`), qui l'applique à sa navigation et à
 ses appels. Sans cela, la SPA viserait `/api/…` au lieu de `/regie/api/…`.
 
-Après tout changement d'`APP_URL` : `php artisan config:cache`.
+**`APP_URL` doit être correct au moment de `yarn build`**, et pas seulement à
+l'exécution : les URL des polices et des images sont écrites dans le CSS à la
+compilation et ne peuvent plus s'adapter ensuite. `vite.config.js` les préfixe
+à partir d'`APP_URL`. Un build fait avec la mauvaise valeur donne des icônes
+absentes et, en console, `OTS parsing error: invalid sfntVersion` — le serveur
+répond une page HTML là où le navigateur attend une police.
+
+Pour servir les fichiers depuis un CDN, `ASSET_URL` prime sur cette déduction.
+
+Après tout changement d'`APP_URL` : `php artisan config:cache`, **puis
+`yarn build`**.
 
 Vérifier que le préfixe est bien pris en compte :
 
