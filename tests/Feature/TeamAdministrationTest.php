@@ -161,6 +161,42 @@ class TeamAdministrationTest extends TestCase
         $this->assertSame('parti@acan.email', $action->actor_email);
     }
 
+    /**
+     * Ce bouton dépanne un collègue. Appliqué à soi-même, il repose
+     * `must_change_password` et referme l'accès dans la seconde : un
+     * administrateur unique se retrouverait enfermé dehors, sans recours si la
+     * fenêtre affichant le mot de passe a été fermée trop vite.
+     */
+    public function test_an_admin_cannot_reset_their_own_password(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)
+            ->postJson("/api/team/{$admin->id}/reset-password")
+            ->assertStatus(409);
+
+        $admin->refresh();
+
+        $this->assertFalse($admin->must_change_password);
+        $this->assertTrue(Hash::check('password', $admin->password));
+    }
+
+    public function test_a_locked_out_account_can_be_rescued_from_the_console(): void
+    {
+        $admin = $this->admin();
+
+        $this->artisan('regie:reset-password', ['email' => $admin->email])
+            ->assertSuccessful();
+
+        $this->assertTrue($admin->refresh()->must_change_password);
+    }
+
+    public function test_the_rescue_command_reports_an_unknown_account(): void
+    {
+        $this->artisan('regie:reset-password', ['email' => 'inconnu@acan.email'])
+            ->assertFailed();
+    }
+
     public function test_an_admin_can_issue_a_new_temporary_password(): void
     {
         $admin = $this->admin();

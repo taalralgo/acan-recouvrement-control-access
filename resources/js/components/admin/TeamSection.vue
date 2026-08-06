@@ -1,10 +1,15 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import TemporaryPasswordDialog from '../TemporaryPasswordDialog.vue'
-import { http } from '../../plugins/http'
+import { appUrl, http } from '../../plugins/http'
 import { useNotifier } from '../../composables/useNotifier'
+import { useCurrentUser } from '../../composables/useCurrentUser'
 
 const notifier = useNotifier()
+const me = useCurrentUser()
+
+// Écran Blade hors de la SPA : lien classique, pas de route interne.
+const passwordUrl = appUrl('/mot-de-passe')
 
 const members = ref([])
 const loading = ref(false)
@@ -138,6 +143,9 @@ async function remove(member) {
         <tr v-for="member in members" :key="member.id">
           <td>
             {{ member.name }}
+            <v-chip v-if="me.isMe(member)" size="x-small" color="primary" variant="tonal" class="ml-2">
+              vous
+            </v-chip>
             <v-chip v-if="member.must_change_password" size="x-small" variant="tonal" class="ml-2">
               mot de passe à définir
             </v-chip>
@@ -148,10 +156,29 @@ async function remove(member) {
               {{ member.role === 'admin' ? 'Administrateur' : 'Recouvrement' }}
             </v-chip>
           </td>
+          <!--
+            Régénérer un mot de passe et supprimer un compte servent à agir sur
+            un collègue. Appliqués à soi-même, ils coupent l'accès de la
+            personne en train d'administrer : les boutons sont donc absents de
+            sa propre ligne, et le serveur refuse de toute façon.
+          -->
           <td class="text-right text-no-wrap">
             <v-btn icon="mdi-pencil" variant="text" size="small" title="Modifier" @click="openEdit(member)" />
-            <v-btn icon="mdi-key-variant" variant="text" size="small" title="Nouveau mot de passe temporaire" @click="resetPassword(member)" />
-            <v-btn icon="mdi-delete" variant="text" size="small" color="error" title="Supprimer" @click="remove(member)" />
+
+            <template v-if="!me.isMe(member)">
+              <v-btn icon="mdi-key-variant" variant="text" size="small" title="Nouveau mot de passe temporaire" @click="resetPassword(member)" />
+              <v-btn icon="mdi-delete" variant="text" size="small" color="error" title="Supprimer" @click="remove(member)" />
+            </template>
+
+            <v-btn
+              v-else
+              variant="text"
+              size="small"
+              prepend-icon="mdi-key-variant"
+              :href="passwordUrl"
+            >
+              Mon mot de passe
+            </v-btn>
           </td>
         </tr>
       </tbody>

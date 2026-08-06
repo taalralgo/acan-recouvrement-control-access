@@ -110,8 +110,19 @@ class TeamApiController extends Controller
      * Il n'y a pas de « mot de passe oublié » en autonomie : sans envoi
      * d'email, c'est l'administrateur qui remet la personne en selle.
      */
-    public function resetPassword(User $user): JsonResponse
+    public function resetPassword(Request $request, User $user): JsonResponse
     {
+        if ($user->is($request->user()))
+        {
+            // Le geste n'a de sens que pour dépanner quelqu'un d'autre. Se
+            // l'appliquer à soi-même repose `must_change_password` et ferme
+            // aussitôt l'accès : sans le mot de passe affiché, un
+            // administrateur unique se retrouverait enfermé dehors.
+            return $this->refuse(
+                'Ce bouton sert à dépanner un collègue. Pour changer votre propre mot de passe, utilisez « Mon mot de passe ».'
+            );
+        }
+
         $password = TemporaryPassword::generate();
 
         $user->forceFill([

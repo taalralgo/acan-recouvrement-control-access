@@ -12,6 +12,7 @@
      navigation et à ses appels. Vide lorsque l'application est à la racine. --}}
 <div id="app"
      data-base-path="{{ rtrim(parse_url(config('app.url'), PHP_URL_PATH) ?? '', '/') }}"
+     data-user-id="{{ auth()->id() }}"
      data-user-name="{{ auth()->user()->name }}"
      data-user-email="{{ auth()->user()->email }}"
      data-user-admin="{{ auth()->user()->isAdmin() ? '1' : '0' }}"
