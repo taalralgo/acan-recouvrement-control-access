@@ -12,7 +12,8 @@
         label { display: block; margin-block: .75rem .25rem; font-weight: 600; }
         input[type=text], input[type=email], input[type=password] { width: 100%; padding: .5rem; box-sizing: border-box; }
         button { margin-top: 1rem; padding: .5rem 1rem; cursor: pointer; }
-        .error { color: #b3261e; margin: .25rem 0; }
+        .error { color: #b3261e; margin: .35rem 0 0; font-size: .9rem; }
+        .hint { margin: .3rem 0 0; font-size: .85rem; }
         .status { color: #1b5e20; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         th, td { text-align: left; padding: .5rem; border-bottom: 1px solid rgba(128,128,128,.25); }
