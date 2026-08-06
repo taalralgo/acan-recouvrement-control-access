@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import AccessStatus from '../components/AccessStatus.vue'
 import BlockDialog from '../components/BlockDialog.vue'
 import UnblockDialog from '../components/UnblockDialog.vue'
@@ -7,7 +7,7 @@ import HistoryDrawer from '../components/HistoryDrawer.vue'
 import { useGroupes } from '../composables/useGroupes'
 import { useNotifier } from '../composables/useNotifier'
 
-const { groupes, loading, syncing, page, lastPage, total, load, block, unblock, sync } = useGroupes()
+const { groupes, loading, syncing, page, lastPage, total, syncState, load, block, unblock, sync } = useGroupes()
 const notifier = useNotifier()
 
 const search = ref('')
@@ -22,6 +22,29 @@ const filters = [
   { value: 'blocked', title: 'Bloquées' },
   { value: 'active', title: 'Actives' },
 ]
+
+/**
+ * En v1 la synchronisation est manuelle : cette mention est le seul rappel que
+ * la liste peut avoir vieilli depuis la dernière visite.
+ */
+const freshness = computed(() => {
+  if (!syncState.value.last_at) {
+    return 'Liste jamais actualisée'
+  }
+
+  const minutes = Math.floor((Date.now() - new Date(syncState.value.last_at)) / 60000)
+
+  if (minutes < 2) return "Liste actualisée à l'instant"
+  if (minutes < 60) return `Liste actualisée il y a ${minutes} min`
+
+  const hours = Math.floor(minutes / 60)
+
+  if (hours < 24) return `Liste actualisée il y a ${hours} h`
+
+  const days = Math.floor(hours / 24)
+
+  return `Liste actualisée il y a ${days} jour${days > 1 ? 's' : ''}`
+})
 
 function refresh(pageNumber = 1) {
   return load({ search: search.value, status: status.value, pageNumber })
@@ -93,14 +116,24 @@ async function refreshFromPlatforms() {
         </p>
       </div>
 
-      <v-btn
-        variant="outlined"
-        prepend-icon="mdi-refresh"
-        :loading="syncing"
-        @click="refreshFromPlatforms"
-      >
-        Actualiser
-      </v-btn>
+      <div class="d-flex align-center ga-3">
+        <span
+          class="text-body-2"
+          :class="syncState.is_stale ? 'text-warning font-weight-medium' : 'text-medium-emphasis'"
+        >
+          <v-icon v-if="syncState.is_stale" icon="mdi-alert-outline" size="small" class="mr-1" />
+          {{ freshness }}
+        </span>
+
+        <v-btn
+          variant="outlined"
+          prepend-icon="mdi-refresh"
+          :loading="syncing"
+          @click="refreshFromPlatforms"
+        >
+          Actualiser
+        </v-btn>
+      </div>
     </div>
 
     <v-card flat border class="mb-4">

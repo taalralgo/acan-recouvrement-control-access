@@ -40,8 +40,10 @@ const blockedSince = computed(() => {
       Désactivé sur la plateforme
     </v-chip>
 
-    <span v-if="groupe.is_stale" class="text-caption text-medium-emphasis">
-      Information datée — actualisez la liste
-    </span>
+    <!--
+      La fraîcheur des données est annoncée une fois en tête de liste, près du
+      bouton qui la résout. Répétée sur chaque ligne, elle deviendrait un
+      avertissement permanent que l'on apprend à ignorer.
+    -->
   </div>
 </template>

@@ -10,6 +10,7 @@ use App\Models\BlockAction;
 use App\Models\Groupe;
 use App\Saas\SaasUnreachable;
 use App\Services\AccessSuspender;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -33,7 +34,30 @@ class GroupeApiController extends Controller
             ->paginate(25)
             ->withQueryString();
 
-        return GroupeResource::collection($groupes);
+        return GroupeResource::collection($groupes)->additional([
+            'sync' => $this->syncState(),
+        ]);
+    }
+
+    /**
+     * Fraîcheur de la liste, tous groupes confondus.
+     *
+     * En v1 la synchronisation est déclenchée à la main : cette information
+     * dit à l'équipe s'il faut actualiser avant d'agir. Elle est calculée sur
+     * l'ensemble des groupes, pas sur la page affichée, et retient le plus
+     * ancien — si une plateforme n'a pas répondu, c'est elle qui compte.
+     *
+     * @return array{last_at: string|null, is_stale: bool}
+     */
+    private function syncState(): array
+    {
+        $oldest = Groupe::query()->min('synced_at');
+
+        return [
+            'last_at' => $oldest === null ? null : Carbon::parse($oldest)->toIso8601String(),
+            'is_stale' => $oldest === null
+                || Carbon::parse($oldest)->lt(now()->subMinutes(config('regie.stale_after_minutes'))),
+        ];
     }
 
     public function block(Request $request, Groupe $groupe): JsonResponse

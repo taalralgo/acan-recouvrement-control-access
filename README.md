@@ -28,8 +28,23 @@ php artisan regie:sync
 `base_url` et `api_token` sont modifiables sans redéploiement : les projets
 changent de serveur, et l'équipe doit pouvoir corriger elle-même.
 
-À planifier en cron (toutes les 15 min par exemple). Le code de sortie vaut 1
-dès qu'une plateforme n'a pas répondu, pour permettre une alerte.
+### Pas de cron en v1
+
+La synchronisation est déclenchée à la main, par le bouton **Actualiser** de
+l'écran des entreprises. C'est suffisant : elle ne rafraîchit que ce qui change
+en dehors de cet outil — création ou renommage d'un groupe, effectif, flag
+`enabled` d'un admin de plateforme — c'est-à-dire des événements rares. L'état
+de blocage décidé ici, lui, est appliqué immédiatement, sans attendre de
+synchronisation.
+
+L'en-tête indique depuis combien de temps la liste n'a pas été rafraîchie, et
+le signale en orange au-delà de `REGIE_STALE_AFTER_MINUTES` (60 par défaut).
+
+Si un cron devenait souhaitable, une fréquence **quotidienne ou horaire**
+suffirait, et `REGIE_STALE_AFTER_MINUTES` devrait alors valoir environ trois
+fois l'intervalle — sinon l'avertissement resterait allumé en permanence et
+serait ignoré. La commande sort en code 1 dès qu'une plateforme n'a pas
+répondu, ce qui permet d'alerter.
 
 ## Comptes
 

@@ -239,6 +239,14 @@ injoignable rendrait toute l'interface inutilisable.
 
 **Le blocage lui-même est toujours un appel live, jamais différé.**
 
+**Synchronisation manuelle en v1, sans cron.** Elle ne rafraîchit que ce qui
+change hors de cet outil — création ou renommage d'un groupe, effectif, flag
+`enabled` d'un admin de plateforme — soit des événements rares. L'état de
+blocage décidé ici est appliqué immédiatement et n'en dépend pas. L'en-tête
+annonce l'âge de la liste et le signale au-delà du seuil ; c'est ce rappel qui
+remplace le cron. Une entreprise disparue entre-temps produit un 404 traité
+proprement (« Cette entreprise n'existe plus, actualisez la liste »).
+
 ### 5.5 Langue du motif
 
 aCAN Régie connaît la langue de chaque groupe (remontée par `fetchGroupes`),

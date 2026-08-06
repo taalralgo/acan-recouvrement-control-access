@@ -92,6 +92,44 @@ class GroupeApiTest extends TestCase
             ->assertJsonPath('data.0.name', 'Radio Lune');
     }
 
+    /**
+     * La synchronisation étant manuelle en v1, l'écran doit dire de lui-même
+     * si la liste a vieilli depuis la dernière visite.
+     */
+    public function test_the_list_reports_how_fresh_it_is(): void
+    {
+        $this->groupe(['synced_at' => now()->subMinutes(5)]);
+
+        $this->actingAs($this->actor())
+            ->getJson('/api/groupes')
+            ->assertOk()
+            ->assertJsonPath('sync.is_stale', false)
+            ->assertJsonStructure(['sync' => ['last_at', 'is_stale']]);
+    }
+
+    public function test_an_old_list_is_flagged_as_stale(): void
+    {
+        $this->groupe(['synced_at' => now()->subDay()]);
+
+        $this->actingAs($this->actor())
+            ->getJson('/api/groupes')
+            ->assertOk()
+            ->assertJsonPath('sync.is_stale', true);
+    }
+
+    public function test_the_oldest_platform_determines_the_freshness(): void
+    {
+        $this->groupe(['synced_at' => now()]);
+        Groupe::factory()->create(['synced_at' => now()->subDay()]);
+
+        // Si une plateforme n'a pas répondu, c'est elle qui doit décider du
+        // message : annoncer « à jour » masquerait son échec.
+        $this->actingAs($this->actor())
+            ->getJson('/api/groupes')
+            ->assertOk()
+            ->assertJsonPath('sync.is_stale', true);
+    }
+
     public function test_blocking_returns_the_updated_row(): void
     {
         $groupe = $this->groupe();

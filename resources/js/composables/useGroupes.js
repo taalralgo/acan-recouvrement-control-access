@@ -15,6 +15,7 @@ export function useGroupes() {
   const page = ref(1)
   const lastPage = ref(1)
   const total = ref(0)
+  const sync_state = ref({ last_at: null, is_stale: true })
 
   async function load({ search = '', status = 'all', pageNumber = 1 } = {}) {
     loading.value = true
@@ -32,6 +33,7 @@ export function useGroupes() {
       page.value = payload.meta.current_page
       lastPage.value = payload.meta.last_page
       total.value = payload.meta.total
+      sync_state.value = payload.sync
     } finally {
       loading.value = false
     }
@@ -71,5 +73,5 @@ export function useGroupes() {
     }
   }
 
-  return { groupes, loading, syncing, page, lastPage, total, load, block, unblock, sync }
+  return { groupes, loading, syncing, page, lastPage, total, syncState: sync_state, load, block, unblock, sync }
 }
