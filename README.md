@@ -26,12 +26,20 @@ obligatoire**, sinon `@vite()` ne trouve pas son manifeste et la page reste
 vide. Les fichiers produits vont dans `public/build`, qui n'est pas versionné.
 
 ```bash
+git pull
 composer install --no-dev --optimize-autoloader
 npm ci
-npm run build
+npm run build                 # obligatoire à chaque mise à jour du front
 php artisan migrate --force
+php artisan optimize:clear    # avant de reconstruire : voir ci-dessous
 php artisan config:cache && php artisan route:cache && php artisan view:cache
 ```
+
+⚠️ **`optimize:clear` n'est pas facultatif.** `view:cache` compile les vues sans
+vider le cache précédent : sans cette purge, Laravel continue de servir les
+vues compilées du déploiement d'avant, même après un `git pull`. Le symptôme
+est déroutant — le PHP se comporte comme la nouvelle version, l'affichage comme
+l'ancienne.
 
 ### Déploiement dans un sous-dossier
 
