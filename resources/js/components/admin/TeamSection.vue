@@ -117,16 +117,12 @@ async function remove(member) {
 
 <template>
   <v-card flat border>
-    <v-card-title class="d-flex flex-wrap align-center justify-space-between ga-2">
+    <v-card-title class="d-flex flex-wrap align-center justify-space-between ga-2 pb-3">
       <span class="text-subtitle-1 font-weight-bold">Comptes de l'équipe</span>
       <v-btn color="primary" size="small" prepend-icon="mdi-account-plus" @click="openCreate">
         Ajouter un compte
       </v-btn>
     </v-card-title>
-
-    <v-card-subtitle class="pb-3">
-      Un départ de l'entreprise se traduit par la suppression du compte ici.
-    </v-card-subtitle>
 
     <v-progress-linear v-if="loading" indeterminate color="primary" />
 

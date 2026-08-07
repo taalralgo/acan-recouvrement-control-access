@@ -69,7 +69,7 @@ class PlatformApiController extends Controller
         $platform->delete();
 
         return response()->json([
-            'message' => "Plateforme {$name} retirée, ainsi que ses entreprises en miroir.",
+            'message' => "Plateforme {$name} retirée, ainsi que ses groupes en miroir.",
         ]);
     }
 
@@ -99,7 +99,7 @@ class PlatformApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => "Connexion établie : {$count} entreprise(s) visible(s) sur cette plateforme.",
+            'message' => "Connexion établie : {$count} groupe(s) visible(s) sur cette plateforme.",
         ]);
     }
 

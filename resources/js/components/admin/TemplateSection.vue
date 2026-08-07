@@ -88,7 +88,7 @@ async function remove(template) {
 
     <v-card-subtitle class="pb-3">
       Ces textes sont lus par vos clients. La version affichée dépend de la
-      langue de l'entreprise concernée.
+      langue du groupe concerné.
     </v-card-subtitle>
 
     <v-progress-linear v-if="loading" indeterminate color="primary" />

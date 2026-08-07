@@ -90,7 +90,7 @@ async function test(platform) {
 }
 
 async function remove(platform) {
-  if (!window.confirm(`Retirer ${platform.name} ? Ses ${platform.groupes_count} entreprise(s) disparaîtront de la liste, mais aucun accès client ne sera modifié.`)) {
+  if (!window.confirm(`Retirer ${platform.name} ? Ses ${platform.groupes_count} groupe(s) disparaîtront de la liste, mais aucun accès client ne sera modifié.`)) {
     return
   }
 
@@ -123,7 +123,7 @@ async function remove(platform) {
         <tr>
           <th>Plateforme</th>
           <th>Adresse</th>
-          <th class="text-center">Entreprises</th>
+          <th class="text-center">Groupes</th>
           <th class="text-right">Actions</th>
         </tr>
       </thead>

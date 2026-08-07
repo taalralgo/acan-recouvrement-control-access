@@ -25,7 +25,7 @@ enum SaasFailure: string
             self::Unreachable => "La plateforme n'a pas répondu. Vérifiez son adresse ou réessayez dans quelques minutes.",
             self::Unauthorized => 'La plateforme a refusé la connexion. Le jeton est probablement à mettre à jour.',
             self::RateLimited => "Trop de suspensions sur cette plateforme depuis une heure. Réessayez plus tard.",
-            self::NotFound => "Cette entreprise n'existe plus sur la plateforme. Actualisez la liste.",
+            self::NotFound => "Ce groupe n'existe plus sur la plateforme. Actualisez la liste.",
             self::Rejected => "La plateforme a refusé l'opération.",
         };
     }

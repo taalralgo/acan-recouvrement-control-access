@@ -98,7 +98,7 @@ erreur brute.
 ### 4.4 API consommée par aCAN Régie
 
 Ce contrat est **identique sur toutes les plateformes**. Le terme `groupe` est
-le vocabulaire partagé ; l'interface d'aCAN Régie parle d'« Entreprises ».
+le vocabulaire partagé, et celui que reprend l'interface d'aCAN Régie.
 
 ```
 GET  /api/access/groupes                → id, code, name, lang, users_count,
@@ -251,8 +251,8 @@ change hors de cet outil — création ou renommage d'un groupe, effectif, flag
 `enabled` d'un admin de plateforme — soit des événements rares. L'état de
 blocage décidé ici est appliqué immédiatement et n'en dépend pas. L'en-tête
 annonce l'âge de la liste et le signale au-delà du seuil ; c'est ce rappel qui
-remplace le cron. Une entreprise disparue entre-temps produit un 404 traité
-proprement (« Cette entreprise n'existe plus, actualisez la liste »).
+remplace le cron. Un groupe disparu entre-temps produit un 404 traité
+proprement (« Ce groupe n'existe plus, actualisez la liste »).
 
 ### 5.5 Langue du motif
 
@@ -280,7 +280,7 @@ le message reste dans la langue d'origine.
 
 ## 6. Interface
 
-### 6.1 Écran principal — liste des entreprises
+### 6.1 Écran principal — liste des groupes
 
 Toutes plateformes confondues, recherche par nom ou code, filtre par statut.
 
@@ -306,7 +306,7 @@ Un clic, sans confirmation lourde : l'erreur est bénigne dans ce sens.
 
 ### 6.4 Historique
 
-Drawer latéral par entreprise : qui, quand, quel motif, blocage ou déblocage.
+Drawer latéral par groupe : qui, quand, quel motif, blocage ou déblocage.
 Sert à répondre à un client en litige.
 
 ### 6.5 Administration (rôle `admin`)
@@ -373,7 +373,7 @@ App Laravel, authentification, modèle de données, `SaasConnector` +
 `HttpSaasConnector`, commande de synchronisation, création du premier admin.
 
 **Lot 3 — aCAN Régie, interface**
-Liste des entreprises, modale de blocage avec aperçu, drawer d'historique.
+Liste des groupes, modale de blocage avec aperçu, drawer d'historique.
 
 **Lot 4 — administration**
 Comptes, plateformes raccordées, modèles de motifs.

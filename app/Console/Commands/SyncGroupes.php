@@ -12,7 +12,7 @@ class SyncGroupes extends Command
 {
     protected $signature = 'regie:sync';
 
-    protected $description = 'Rafraîchit la liste des entreprises depuis les plateformes raccordées';
+    protected $description = 'Rafraîchit la liste des groupes depuis les plateformes raccordées';
 
     public function handle(GroupeSynchronizer $synchronizer): int
     {

@@ -96,7 +96,7 @@ class PlatformAdministrationTest extends TestCase
             ->postJson("/api/platforms/{$platform->id}/test")
             ->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonPath('message', 'Connexion établie : 2 entreprise(s) visible(s) sur cette plateforme.');
+            ->assertJsonPath('message', 'Connexion établie : 2 groupe(s) visible(s) sur cette plateforme.');
 
         $this->assertNotNull($platform->refresh()->last_reachable_at);
     }

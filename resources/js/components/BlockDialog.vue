@@ -121,7 +121,7 @@ async function submit() {
               density="compact"
               class="mt-4 text-body-2"
             >
-              Cette entreprise est déjà désactivée sur la plateforme par ses
+              Ce groupe est déjà désactivé sur la plateforme par ses
               administrateurs. Votre blocage s'ajoute à cette désactivation.
             </v-alert>
           </v-col>

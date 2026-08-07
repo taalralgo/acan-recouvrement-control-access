@@ -41,6 +41,6 @@ final readonly class SyncResult
             return $this->error?->forHumans() ?? 'Échec inconnu.';
         }
 
-        return sprintf('%d entreprise(s) à jour, %d retirée(s).', $this->synced, $this->removed);
+        return sprintf('%d groupe(s) à jour, %d retiré(s).', $this->synced, $this->removed);
     }
 }

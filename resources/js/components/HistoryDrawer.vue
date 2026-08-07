@@ -71,7 +71,7 @@ function formatDate(value) {
       <v-progress-linear v-if="loading" indeterminate color="primary" />
 
       <div v-if="!loading && actions.length === 0" class="pa-6 text-center text-medium-emphasis text-body-2">
-        Aucune décision enregistrée pour cette entreprise.
+        Aucune décision enregistrée pour ce groupe.
       </div>
 
       <v-timeline

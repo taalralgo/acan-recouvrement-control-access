@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { http } from '../plugins/http'
 
 /**
- * Liste des entreprises et actions associées.
+ * Liste des groupes et actions associées.
  *
  * Aucune mise à jour optimiste : la ligne n'est modifiée à l'écran qu'avec la
  * réponse de la plateforme. Afficher « bloqué » avant confirmation reviendrait

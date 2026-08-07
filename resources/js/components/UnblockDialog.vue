@@ -59,7 +59,7 @@ async function submit() {
           density="compact"
           class="mt-3"
         >
-          Attention : cette entreprise reste désactivée sur la plateforme par
+          Attention : ce groupe reste désactivé sur la plateforme par
           ses administrateurs. Le rétablissement ne suffira pas à lui rendre
           l'accès.
         </v-alert>

@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Copie locale d'un groupe tel qu'il existe sur sa plateforme.
  *
- * `Groupe` est le vocabulaire commun à tous nos SAAS ; l'interface, elle,
- * parle d'« Entreprises », le mot qu'emploie l'équipe de recouvrement.
+ * `Groupe` est le vocabulaire commun à tous nos SAAS, et celui qu'emploie
+ * l'équipe de recouvrement : l'interface le reprend tel quel.
  */
 #[Fillable([
     'platform_id',

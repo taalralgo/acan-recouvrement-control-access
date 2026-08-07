@@ -92,7 +92,7 @@ class GroupeApiController extends Controller
         if ($fresh === null)
         {
             return response()->json([
-                'message' => "Cette entreprise n'existe plus sur la plateforme.",
+                'message' => "Ce groupe n'existe plus sur la plateforme.",
             ], Response::HTTP_NOT_FOUND);
         }
 

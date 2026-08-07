@@ -123,7 +123,7 @@ changent de serveur, et l'équipe doit pouvoir corriger elle-même.
 ### Pas de cron en v1
 
 La synchronisation est déclenchée à la main, par le bouton **Actualiser** de
-l'écran des entreprises. C'est suffisant : elle ne rafraîchit que ce qui change
+l'écran des groupes. C'est suffisant : elle ne rafraîchit que ce qui change
 en dehors de cet outil — création ou renommage d'un groupe, effectif, flag
 `enabled` d'un admin de plateforme — c'est-à-dire des événements rares. L'état
 de blocage décidé ici, lui, est appliqué immédiatement, sans attendre de

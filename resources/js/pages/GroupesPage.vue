@@ -83,7 +83,7 @@ async function openBlock(groupe) {
       notifier.failure(`Impossible de vérifier les informations à jour. ${payload.message}`)
     }
   } catch (error) {
-    // Entreprise disparue de la plateforme, ou plateforme injoignable.
+    // Groupe disparu de la plateforme, ou plateforme injoignable.
     notifier.failure(error.message)
     await refresh(page.value)
   } finally {
@@ -139,9 +139,9 @@ async function refreshFromPlatforms() {
   <v-container class="py-6" style="max-width: 1200px">
     <div class="d-flex flex-wrap align-center justify-space-between ga-4 mb-5">
       <div>
-        <h1 class="text-h5 font-weight-bold">Entreprises</h1>
+        <h1 class="text-h5 font-weight-bold">Groupes</h1>
         <p class="text-body-2 text-medium-emphasis mb-0">
-          {{ total }} entreprise{{ total > 1 ? 's' : '' }}
+          {{ total }} groupe{{ total > 1 ? 's' : '' }}
         </p>
       </div>
 
@@ -169,7 +169,7 @@ async function refreshFromPlatforms() {
       <v-card-text class="d-flex flex-wrap ga-4">
         <v-text-field
           v-model="search"
-          label="Rechercher une entreprise"
+          label="Rechercher un groupe"
           prepend-inner-icon="mdi-magnify"
           clearable
           style="min-width: 260px; flex: 1 1 260px"
@@ -190,7 +190,7 @@ async function refreshFromPlatforms() {
       <v-table>
         <thead>
           <tr>
-            <th>Entreprise</th>
+            <th>Groupe</th>
             <th class="d-none d-md-table-cell">Plateforme</th>
             <th class="text-center">Utilisateurs</th>
             <th>Accès</th>
@@ -252,7 +252,7 @@ async function refreshFromPlatforms() {
 
           <tr v-if="!loading && groupes.length === 0">
             <td colspan="5" class="text-center text-medium-emphasis py-8">
-              Aucune entreprise ne correspond à cette recherche.
+              Aucun groupe ne correspond à cette recherche.
             </td>
           </tr>
         </tbody>
